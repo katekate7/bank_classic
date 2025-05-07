@@ -1,0 +1,11 @@
+# Symfony (backend)
+**/vendor/
+**/.env.local
+**/.env.dev
+**/.env.test
+
+# Node.js (frontend)
+**/node_modules/
+
+# macOS
+**/.DS_Store
