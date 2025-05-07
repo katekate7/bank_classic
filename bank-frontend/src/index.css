@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+ background-color: #14213D !important; 
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+h2.text-center.mb-4 {
+  color: #FCA311;
+  font-family: "Montserrat";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+}
+
+.justify-content-center{
+  flex-direction: column;
+}
+
+.card.p-4.shadow{
+  border-radius: 20px;
+  background: #FFF;
+}
+
+input.form-control{
+border-radius: 20px;
+background: rgba(252, 163, 17, 0.25);
+border: none;
+color: rgba(0, 0, 0, 0.50);
+font-family: "Inter";
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+padding-top: 16px;
+padding-bottom: 16px;
+}
+
+button.btn.btn-primary.w-100{
+  border-radius: 20px;
+background: #FCA311;
+border: none;
+color: #FFF;
+font-family: "Inter";
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+padding: 16px 0;
+}
+
+p.text-center.mt-3{
+  color: #000;
+font-family: "Inter";
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+margin-bottom: 0 !important;
+}
+p.text-center.mt-3 a{
+  color: #FCA311;
+  font-family: "Inter";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.form-control:focus{
+border-color: #FCA311 !important;
+box-shadow: 0 0 0 0.2rem rgba(252, 163, 17, 0.25) !important;
+}
+
+.dashboard-body{
+  background-color: white !important;
+  place-items: flex-start;
+  padding: 1rem;
+}
+
+.dashboard{
+    margin: 1.5rem 0 !important;
+}
+.dashboard-text{
+  color: #14213D;
+font-family: "Montserrat";
+font-size: 24px;
+font-style: normal;
+font-weight: 900;
+line-height: normal;
+}
+
+img.add-expense-icon{
+  width: 31px;
+  height: 32px;
+}
+
+.add-expense{
+  display: flex;
+align-items: center;
+flex-direction: row;
+}
+
+
+.button.add-btn{
+background-color: white !important;
+}
+@media (prefers-color-scheme: light) {
+  button {
+      background-color: none !important;
+  }
+}
+
+.add-btn{
+  background-color: white !important;
+  padding: 0 6px !important;
+}
+
+.logout{
+  border-radius: 6px;
+background: #14213D;
+color: #FFF;
+font-family: "Montserrat";
+font-size: 19px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+padding: 5px 16px;
+bottom: 0;
+position: absolute;
+right: 1rem;
+margin-bottom: 2rem;
+}
+
+
+
+
+.h3-expense, .main-text{
+  color: #FCA311;
+  font-family: "Montserrat";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.label-expense, .category-expense, .date-expense , .amount-expense{
+  color: #000;
+  font-family: "Montserrat";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 12px;
+  }
+
+  .containes-input input, .containes-input select, .containes-input input, .containes-input input{
+    margin: 0 0 0 1rem;
+    border-radius: 11px;
+    background: rgba(252, 163, 17, 0.25);
+    border: none;
+    padding: 2px 10px;
+    color: black;
+    font-family: "Montserrat";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 7px;
+  }
+
+  .buttons-expense{
+    display: flex;
+    margin-top: 1rem;
+    justify-content: space-between;
+  }
+
+  .save, .cancel{
+    border-radius: 11px;
+    background: #FCA311;
+    padding: 6px 44px;
+    color: #FFF;
+    font-family: "Montserrat";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .containes-together {
+    display: flex;
+}
+.containes-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.expense-list{
+  border: solid 1px #14213D;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+@media screen and (min-width: 600px) {
+  .expense-card {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+}
+
+.actions button{
+background-color: transparent !important;
+}
+
+.form-control:focus{
+  border-color: #FCA311 !important;
+  box-shadow: 0 0 0 0.2rem rgba(252, 163, 17, 0.25) !important;
+}
+
+button:hover, .form-control:focus {
+border-color: #FCA311 !important;
+}
