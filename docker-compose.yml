@@ -7,6 +7,8 @@ services:
       - "5173:5173"
     networks:
       - app-network
+    command: npm run dev
+
 
   backend:
     build: ./bank-backend
@@ -26,6 +28,17 @@ services:
       MYSQL_DATABASE: mybank
     volumes:
       - dbdata:/var/lib/mysql
+    networks:
+      - app-network
+      
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - "8087:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
     networks:
       - app-network
 
