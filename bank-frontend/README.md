@@ -47,3 +47,5 @@ Link the jenkins agent
 ```
 docker run --init --name jenkins_agent_react_bank -v /var/run/docker.sock:/var/run/docker.sock jenkins-agent-with-docker-and-react-bank -url http://172.17.0.2:8080 2f98b0f2bb6c7f1e418c93b3745a43d916f4cb2cee579ddded716a4668efc1c0 mybank-frontend
 ``
+
+docker run --init --name jenkins_agent_front_bank_classic -v /var/run/docker.sock:/var/run/docker.sock jenkins-agent-bank_classique_front  -url http://172.17.0.2:8080 2bcf95e1373b8ed7e0398e6f697dccfabfb643b1c7869f33ce5858b3d338ac10 bank-classic

@@ -137,6 +137,8 @@ box-shadow: 0 0 0 0.2rem rgba(252, 163, 17, 0.25) !important;
   background-color: white !important;
   place-items: flex-start;
   padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .dashboard{
@@ -262,6 +264,8 @@ margin-bottom: 2rem;
   border: solid 1px #14213D;
   border-radius: 20px;
   padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media screen and (min-width: 600px) {

@@ -35,7 +35,7 @@ const Dashboard = ({ setAuthenticated }) => {
 
   return (
     <div className="dashboard-body">
-      <div id="dashboard-container">
+      <div id="dashboard-container" style={{ width: '100%' }}>
         <div className="dashboard">
           <h2 className="dashboard-text">Dashboard</h2>
 
