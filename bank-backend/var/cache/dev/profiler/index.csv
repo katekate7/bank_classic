@@ -589,3 +589,9 @@ fa8446,127.0.0.1,DELETE,http://localhost:8000/api/expense/24,1752448942,,200
 a1ab8b,127.0.0.1,POST,http://localhost:8000/api/expense,1752448950,,201
 d8ca63,127.0.0.1,GET,http://localhost:8000/api/expenses,1752448950,,200
 c05aba,127.0.0.1,GET,http://localhost:8000/api/expenses,1752448950,,200
+a0dbd0,127.0.0.1,GET,http://localhost:8000/api/expenses,1752449586,,200
+34bd2f,127.0.0.1,GET,http://localhost:8000/api/expenses,1752449586,,200
+079729,127.0.0.1,GET,http://localhost:8000/api/categories,1752449589,,200
+e5e8ca,127.0.0.1,GET,http://localhost:8000/api/categories,1752449589,,200
+0b6dab,127.0.0.1,GET,http://localhost:8000/api/expenses,1752449592,,200
+30cfb1,127.0.0.1,GET,http://localhost:8000/api/expenses,1752449592,,200

@@ -1,0 +1,379 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = credentials('docker-registry')
+        TEST_DATABASE_URL = 'mysql://root:testroot@test-db:3306/test_mybank'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                echo 'Code checked out successfully'
+            }
+        }
+        
+        stage('Build') {
+            parallel {
+                stage('Build Backend') {
+                    steps {
+                        dir('bank-backend') {
+                            sh 'docker build -t bank-backend:test -f Dockerfile .'
+                            echo 'Backend built successfully'
+                        }
+                    }
+                }
+                stage('Build Frontend') {
+                    steps {
+                        dir('bank-frontend') {
+                            sh 'docker build -t bank-frontend:test -f Dockerfile .'
+                            echo 'Frontend built successfully'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Test') {
+            parallel {
+                stage('Backend Unit Tests') {
+                    steps {
+                        script {
+                            try {
+                                sh '''
+                                    cd bank-backend
+                                    docker run --rm -v $(pwd):/var/www/html bank-backend:test \
+                                        vendor/bin/phpunit tests/Entity/ tests/Form/ tests/Repository/ \
+                                        --log-junit test-results/phpunit.xml \
+                                        --coverage-clover test-results/coverage.xml
+                                '''
+                                publishTestResults testResultsPattern: 'bank-backend/test-results/phpunit.xml'
+                            } catch (Exception e) {
+                                currentBuild.result = 'FAILURE'
+                                error("Backend unit tests failed: ${e.getMessage()}")
+                            }
+                        }
+                    }
+                }
+                
+                stage('Backend Controller Tests') {
+                    steps {
+                        script {
+                            try {
+                                sh '''
+                                    cd bank-backend
+                                    docker run --rm -v $(pwd):/var/www/html bank-backend:test \
+                                        vendor/bin/phpunit tests/Controller/ \
+                                        --log-junit test-results/controller-tests.xml
+                                '''
+                                publishTestResults testResultsPattern: 'bank-backend/test-results/controller-tests.xml'
+                            } catch (Exception e) {
+                                currentBuild.result = 'FAILURE'
+                                error("Backend controller tests failed: ${e.getMessage()}")
+                            }
+                        }
+                    }
+                }
+                
+                stage('Frontend Tests') {
+                    steps {
+                        script {
+                            try {
+                                sh '''
+                                    cd bank-frontend
+                                    docker run --rm -v $(pwd):/app bank-frontend:test sh -c "
+                                        npm ci
+                                        npm run test -- --reporter=junit --outputFile=test-results/jest.xml
+                                        npm run test:coverage
+                                    "
+                                '''
+                                publishTestResults testResultsPattern: 'bank-frontend/test-results/jest.xml'
+                            } catch (Exception e) {
+                                currentBuild.result = 'FAILURE'
+                                error("Frontend tests failed: ${e.getMessage()}")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Integration Tests') {
+            steps {
+                script {
+                    try {
+                        sh '''
+                            # Start test environment
+                            docker-compose -f docker-compose.test.yml up -d test-db
+                            
+                            # Wait for database
+                            sleep 30
+                            
+                            # Run integration tests
+                            docker-compose -f docker-compose.test.yml run --rm integration-test \
+                                vendor/bin/phpunit tests/Integration/ \
+                                --log-junit test-results/integration-tests.xml
+                        '''
+                        publishTestResults testResultsPattern: 'bank-backend/test-results/integration-tests.xml'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Integration tests failed: ${e.getMessage()}")
+                    } finally {
+                        sh 'docker-compose -f docker-compose.test.yml down'
+                    }
+                }
+            }
+        }
+        
+        stage('E2E Tests') {
+            steps {
+                script {
+                    try {
+                        sh '''
+                            # Start test environment
+                            docker-compose -f docker-compose.test.yml up -d test-db
+                            
+                            # Wait for database
+                            sleep 30
+                            
+                            # Run E2E tests
+                            docker-compose -f docker-compose.test.yml run --rm integration-test \
+                                vendor/bin/phpunit tests/E2E/ \
+                                --log-junit test-results/e2e-tests.xml
+                        '''
+                        publishTestResults testResultsPattern: 'bank-backend/test-results/e2e-tests.xml'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("E2E tests failed: ${e.getMessage()}")
+                    } finally {
+                        sh 'docker-compose -f docker-compose.test.yml down'
+                    }
+                }
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                script {
+                    try {
+                        // Backend security scan
+                        sh '''
+                            cd bank-backend
+                            docker run --rm -v $(pwd):/app \
+                                registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:latest \
+                                /analyzer run
+                        '''
+                        
+                        // Frontend security scan
+                        sh '''
+                            cd bank-frontend
+                            docker run --rm -v $(pwd):/app bank-frontend:test \
+                                npm audit --audit-level high
+                        '''
+                    } catch (Exception e) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "Security scan warnings: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+        
+        stage('Code Quality') {
+            steps {
+                script {
+                    try {
+                        // Backend code quality
+                        sh '''
+                            cd bank-backend
+                            docker run --rm -v $(pwd):/var/www/html bank-backend:test \
+                                vendor/bin/phpstan analyse src tests --level=5
+                        '''
+                        
+                        // Frontend code quality
+                        sh '''
+                            cd bank-frontend
+                            docker run --rm -v $(pwd):/app bank-frontend:test \
+                                npm run lint
+                        '''
+                    } catch (Exception e) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "Code quality warnings: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+        
+        stage('Performance Tests') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    try {
+                        sh '''
+                            # Start application
+                            docker-compose up -d
+                            
+                            # Wait for services
+                            sleep 60
+                            
+                            # Run performance tests
+                            docker run --rm --network host \
+                                loadimpact/k6 run - <<EOF
+                            import http from 'k6/http';
+                            import { check } from 'k6';
+                            
+                            export let options = {
+                                stages: [
+                                    { duration: '2m', target: 10 },
+                                    { duration: '5m', target: 10 },
+                                    { duration: '2m', target: 0 },
+                                ],
+                            };
+                            
+                            export default function() {
+                                let response = http.get('http://localhost:5173');
+                                check(response, {
+                                    'status is 200': (r) => r.status === 200,
+                                    'response time < 500ms': (r) => r.timings.duration < 500,
+                                });
+                            }
+EOF
+                        '''
+                    } catch (Exception e) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "Performance test warnings: ${e.getMessage()}"
+                    } finally {
+                        sh 'docker-compose down'
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Staging') {
+            when {
+                branch 'main'
+                expression { currentBuild.result != 'FAILURE' }
+            }
+            steps {
+                script {
+                    try {
+                        sh '''
+                            # Tag images for staging
+                            docker tag bank-backend:test ${DOCKER_REGISTRY}/bank-backend:staging
+                            docker tag bank-frontend:test ${DOCKER_REGISTRY}/bank-frontend:staging
+                            
+                            # Push to registry
+                            docker push ${DOCKER_REGISTRY}/bank-backend:staging
+                            docker push ${DOCKER_REGISTRY}/bank-frontend:staging
+                            
+                            # Deploy to staging environment
+                            ssh staging-server "
+                                docker pull ${DOCKER_REGISTRY}/bank-backend:staging
+                                docker pull ${DOCKER_REGISTRY}/bank-frontend:staging
+                                docker-compose -f docker-compose.staging.yml up -d
+                            "
+                        '''
+                        echo 'Deployed to staging successfully'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Staging deployment failed: ${e.getMessage()}")
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up
+            sh '''
+                docker system prune -f
+                docker-compose -f docker-compose.test.yml down --volumes --remove-orphans
+            '''
+            
+            // Archive test results
+            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/coverage/**/*', allowEmptyArchive: true
+            
+            // Publish coverage reports
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'bank-backend/var/coverage',
+                reportFiles: 'index.html',
+                reportName: 'Backend Coverage Report'
+            ])
+            
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'bank-frontend/coverage',
+                reportFiles: 'index.html',
+                reportName: 'Frontend Coverage Report'
+            ])
+        }
+        
+        success {
+            echo '🎉 All tests passed! The banking application is ready for deployment.'
+            
+            // Notify success
+            emailext (
+                subject: "✅ Tests Passed: Bank Application Build #${BUILD_NUMBER}",
+                body: """
+                All tests have passed successfully!
+                
+                Test Results:
+                - Backend Unit Tests: ✅ PASSED
+                - Backend Controller Tests: ✅ PASSED  
+                - Frontend Tests: ✅ PASSED
+                - Integration Tests: ✅ PASSED
+                - E2E Tests: ✅ PASSED
+                - Security Scan: ✅ PASSED
+                - Code Quality: ✅ PASSED
+                
+                Build URL: ${BUILD_URL}
+                """,
+                to: "${env.CHANGE_AUTHOR_EMAIL ?: 'team@example.com'}"
+            )
+        }
+        
+        failure {
+            echo '❌ Tests failed! Please check the logs for details.'
+            
+            // Notify failure
+            emailext (
+                subject: "❌ Tests Failed: Bank Application Build #${BUILD_NUMBER}",
+                body: """
+                Some tests have failed. Please review the build logs.
+                
+                Build URL: ${BUILD_URL}
+                Console Output: ${BUILD_URL}console
+                
+                Please fix the issues and push again.
+                """,
+                to: "${env.CHANGE_AUTHOR_EMAIL ?: 'team@example.com'}"
+            )
+        }
+        
+        unstable {
+            echo '⚠️ Tests completed with warnings.'
+            
+            // Notify unstable
+            emailext (
+                subject: "⚠️ Tests Unstable: Bank Application Build #${BUILD_NUMBER}",
+                body: """
+                Tests completed but with some warnings.
+                
+                Please review the build logs for potential issues.
+                
+                Build URL: ${BUILD_URL}
+                """,
+                to: "${env.CHANGE_AUTHOR_EMAIL ?: 'team@example.com'}"
+            )
+        }
+    }
+}

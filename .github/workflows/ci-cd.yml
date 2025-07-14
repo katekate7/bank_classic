@@ -1,0 +1,124 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOCKER_REGISTRY: docker.io
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: 🧪 Tests d'Intégration
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: 🔧 Build test images
+      run: |
+        docker-compose -f docker-compose.test.yml build
+        
+    - name: 🧪 Run integration tests
+      run: |
+        chmod +x ./run-tests.sh
+        ./run-tests.sh
+        
+    - name: 📊 Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: |
+          bank-backend/test-results/
+          bank-frontend/coverage/
+        
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    name: 🏗️ Build & Push Images
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: 🔐 Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        
+    - name: 🏗️ Build and push backend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./bank-backend
+        push: true
+        tags: |
+          ${{ env.DOCKER_REGISTRY }}/bank-backend:latest
+          ${{ env.DOCKER_REGISTRY }}/bank-backend:${{ env.IMAGE_TAG }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: 🏗️ Build and push frontend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./bank-frontend
+        push: true
+        tags: |
+          ${{ env.DOCKER_REGISTRY }}/bank-frontend:latest
+          ${{ env.DOCKER_REGISTRY }}/bank-frontend:${{ env.IMAGE_TAG }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    name: 🚀 Deploy to Production
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🚀 Deploy to server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        key: ${{ secrets.DEPLOY_KEY }}
+        script: |
+          cd /opt/bank-app
+          
+          # Pull latest images
+          docker pull ${{ env.DOCKER_REGISTRY }}/bank-backend:${{ env.IMAGE_TAG }}
+          docker pull ${{ env.DOCKER_REGISTRY }}/bank-frontend:${{ env.IMAGE_TAG }}
+          
+          # Update docker-compose with new images
+          export IMAGE_TAG=${{ env.IMAGE_TAG }}
+          
+          # Rolling update with zero downtime
+          docker-compose -f docker-compose.prod.yml up -d --no-deps backend
+          docker-compose -f docker-compose.prod.yml up -d --no-deps frontend
+          
+          # Health check
+          sleep 30
+          curl -f http://localhost:8000/health || exit 1
+          curl -f http://localhost:5173/ || exit 1
+          
+          # Cleanup old images
+          docker image prune -f
+          
+          echo "✅ Deployment successful!"

@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  frontend-test:
+    build: 
+      context: ./bank-frontend
+      target: test
+    volumes:
+      - ./bank-frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=test
+    command: npm run test
+
+  backend-test:
+    build: 
+      context: ./bank-backend
+      target: test
+    volumes:
+      - ./bank-backend:/var/www/html
+    environment:
+      - APP_ENV=test
+      - DATABASE_URL=sqlite:///var/www/html/var/test.db
+    command: vendor/bin/phpunit
+
+  test-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: testroot
+      MYSQL_DATABASE: test_mybank
+    ports:
+      - "3307:3306"
+    tmpfs:
+      - /var/lib/mysql  # Use tmpfs for faster test database
+
+  integration-test:
+    build: ./bank-backend
+    depends_on:
+      - test-db
+    environment:
+      - APP_ENV=test
+      - DATABASE_URL=mysql://root:testroot@test-db:3306/test_mybank?serverVersion=8&charset=utf8mb4
+    command: vendor/bin/phpunit tests/Integration/ tests/E2E/
+    volumes:
+      - ./bank-backend:/var/www/html
+
+networks:
+  test-network:
+    driver: bridge
+
+volumes:
+  test-data:
