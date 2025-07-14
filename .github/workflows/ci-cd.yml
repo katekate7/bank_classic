@@ -15,28 +15,71 @@ jobs:
     runs-on: ubuntu-latest
     name: 🧪 Tests d'Intégration
     
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: bank_test
+          MYSQL_USER: bank_user
+          MYSQL_PASSWORD: bank_password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    
     steps:
     - name: 📥 Checkout code
       uses: actions/checkout@v4
       
-    - name: 🐳 Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      
-    - name: 🔧 Build test images
-      run: |
-        docker-compose -f docker-compose.test.yml build
+    - name: � Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, dom, filter, gd, json, pdo, sqlite3
+        tools: composer:v2
+        coverage: none
         
-    - name: 🧪 Run integration tests
+    - name: 📦 Install Composer dependencies
+      working-directory: ./bank-backend
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+        
+    - name: ⚙️ Setup environment
+      working-directory: ./bank-backend
       run: |
-        chmod +x ./run-tests.sh
-        # Install backend dependencies
-        docker-compose -f docker-compose.test.yml run --rm backend-test composer install --dev --optimize-autoloader
-        # Setup test database
-        docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:database:create --env=test --if-not-exists
-        docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:migrations:migrate --env=test --no-interaction
-        docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:fixtures:load --env=test --no-interaction
-        # Run all tests
-        ./run-tests.sh
+        cp .env.test .env
+        # Wait for MySQL to be ready
+        until mysqladmin ping -h 127.0.0.1 -P 3306 -u root -proot --silent; do
+          echo 'Waiting for MySQL...'
+          sleep 2
+        done
+        echo 'MySQL is ready!'
+        
+    - name: 🗄️ Create database and run migrations
+      working-directory: ./bank-backend
+      run: |
+        php bin/console doctrine:database:create --env=test --if-not-exists
+        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+        php bin/console doctrine:fixtures:load --env=test --no-interaction
+        
+    - name: 🧪 Run Symfony tests
+      working-directory: ./bank-backend
+      run: |
+        php bin/phpunit --testdox
+        
+    - name: 🔧 Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: './bank-frontend/package-lock.json'
+        
+    - name: 📦 Install frontend dependencies
+      working-directory: ./bank-frontend
+      run: npm ci
+        
+    - name: 🧪 Run frontend tests
+      working-directory: ./bank-frontend
+      run: npm run test
         
     - name: 📊 Upload test results
       uses: actions/upload-artifact@v4
@@ -44,7 +87,7 @@ jobs:
       with:
         name: test-results
         path: |
-          bank-backend/test-results/
+          bank-backend/var/log/
           bank-frontend/coverage/
         
   build:
