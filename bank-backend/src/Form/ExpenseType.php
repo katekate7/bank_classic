@@ -14,7 +14,7 @@ class ExpenseType extends AbstractType
         $builder
             ->add('label')
             ->add('date')
-            ->add('amount')
+            ->add('amout')
             ->add('category')
         ;
     }

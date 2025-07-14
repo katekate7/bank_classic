@@ -28,7 +28,7 @@ class ExpenseManagementE2ETest extends WebTestCase
         $this->user = new User();
         $this->user->setEmail('e2e-test@example.com');
         
-        $passwordHasher = $this->getContainer()->get('security.user_password_hasher');
+        $passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
         $hashedPassword = $passwordHasher->hashPassword($this->user, 'e2epassword');
         $this->user->setPassword($hashedPassword);
         
@@ -183,7 +183,7 @@ class ExpenseManagementE2ETest extends WebTestCase
         // Create another user
         $otherUser = new User();
         $otherUser->setEmail('other-e2e@example.com');
-        $passwordHasher = $this->getContainer()->get('security.user_password_hasher');
+        $passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
         $otherUser->setPassword($passwordHasher->hashPassword($otherUser, 'password'));
         
         $category = new Category();

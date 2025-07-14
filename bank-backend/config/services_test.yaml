@@ -1,7 +1,7 @@
 services:
-    # Make concrete services public for testing
-    doctrine.orm.default_entity_manager:
-        public: true
+    # Alias interfaces to concrete services for testing
+    Doctrine\ORM\EntityManagerInterface:
+        alias: 'doctrine.orm.default_entity_manager'
         
-    security.user_password_hasher:
-        public: true
+    Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
+        alias: 'security.user_password_hasher'
