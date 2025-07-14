@@ -39,10 +39,6 @@ jobs:
         tools: composer:v2
         coverage: none
         
-    - name: 📦 Install Composer dependencies
-      working-directory: ./bank-backend
-      run: composer install --no-progress --prefer-dist --optimize-autoloader
-        
     - name: ⚙️ Setup environment
       working-directory: ./bank-backend
       run: |
@@ -54,12 +50,20 @@ jobs:
         done
         echo 'MySQL is ready!'
         
+    - name: 📦 Install Composer dependencies
+      working-directory: ./bank-backend
+      run: composer install --no-progress --prefer-dist --optimize-autoloader --no-scripts
+        
     - name: 🗄️ Create database and run migrations
       working-directory: ./bank-backend
       run: |
         php bin/console doctrine:database:create --env=test --if-not-exists
         php bin/console doctrine:migrations:migrate --env=test --no-interaction
         php bin/console doctrine:fixtures:load --env=test --no-interaction
+        
+    - name: 🔄 Run Composer auto-scripts
+      working-directory: ./bank-backend
+      run: composer run-script auto-scripts
         
     - name: 🧪 Run Symfony tests
       working-directory: ./bank-backend
