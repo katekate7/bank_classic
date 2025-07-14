@@ -20,13 +20,13 @@ class ExpenseRepositoryTest extends KernelTestCase
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
-        $this->entityManager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $this->entityManager = $kernel->getContainer()->get(EntityManagerInterface::class);
         $this->repository = $this->entityManager->getRepository(Expense::class);
         
         // Create test user
         $this->user = new User();
         $this->user->setEmail('repo-test@example.com');
-        $passwordHasher = $kernel->getContainer()->get('security.user_password_hasher');
+        $passwordHasher = $kernel->getContainer()->get(UserPasswordHasherInterface::class);
         $this->user->setPassword($passwordHasher->hashPassword($this->user, 'password'));
         
         // Create test category
@@ -73,7 +73,7 @@ class ExpenseRepositoryTest extends KernelTestCase
         // Create expense for another user
         $otherUser = new User();
         $otherUser->setEmail('other-repo@example.com');
-        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
+        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $otherUser->setPassword($passwordHasher->hashPassword($otherUser, 'password'));
         
         $otherExpense = new Expense();

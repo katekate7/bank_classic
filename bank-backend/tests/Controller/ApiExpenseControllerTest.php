@@ -19,7 +19,7 @@ class ApiExpenseControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->entityManager = static::getContainer()->get('doctrine.orm.entity_manager');
+        $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
         
         // Create test database schema only once per test run
         if (!self::$schemaCreated) {
@@ -31,7 +31,7 @@ class ApiExpenseControllerTest extends WebTestCase
         $this->user = new User();
         $this->user->setEmail('api-test@example.com');
         
-        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
+        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $hashedPassword = $passwordHasher->hashPassword($this->user, 'testpassword');
         $this->user->setPassword($hashedPassword);
         
@@ -291,7 +291,7 @@ class ApiExpenseControllerTest extends WebTestCase
         // Create another user and expense
         $otherUser = new User();
         $otherUser->setEmail('other-api@example.com');
-        $passwordHasher = $this->getContainer()->get('security.user_password_hasher');
+        $passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
         $otherUser->setPassword($passwordHasher->hashPassword($otherUser, 'password'));
         
         $category = new Category();

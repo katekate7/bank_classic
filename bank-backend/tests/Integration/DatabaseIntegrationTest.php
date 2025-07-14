@@ -29,7 +29,7 @@ class DatabaseIntegrationTest extends DatabaseTestCase
         $user = new User();
         $user->setEmail('integration-test@example.com');
         
-        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
+        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $hashedPassword = $passwordHasher->hashPassword($user, 'testpassword');
         $user->setPassword($hashedPassword);
 
@@ -85,7 +85,7 @@ class DatabaseIntegrationTest extends DatabaseTestCase
         $user = new User();
         $user->setEmail('cascade-test@example.com');
         
-        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
+        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $user->setPassword($passwordHasher->hashPassword($user, 'password'));
 
         $category = new Category();
@@ -148,7 +148,7 @@ class DatabaseIntegrationTest extends DatabaseTestCase
         $user = new User();
         $user->setEmail('transaction-test@example.com');
         
-        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
+        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $user->setPassword($passwordHasher->hashPassword($user, 'password'));
 
         $category = new Category();
@@ -204,7 +204,7 @@ class DatabaseIntegrationTest extends DatabaseTestCase
         $user = new User();
         $user->setEmail('performance-test@example.com');
         
-        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
+        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $user->setPassword($passwordHasher->hashPassword($user, 'password'));
 
         $category = new Category();
@@ -264,7 +264,7 @@ class DatabaseIntegrationTest extends DatabaseTestCase
         $user1 = new User();
         $user1->setEmail('constraint-test@example.com');
         
-        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
+        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $user1->setPassword($passwordHasher->hashPassword($user1, 'password'));
 
         $this->entityManager->persist($user1);
