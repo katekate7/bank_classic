@@ -40,6 +40,7 @@ const RegisterForm = ({ setAuthenticated }) => {
           <div className="card p-4 shadow" style={{ width: '100%', maxWidth: '400px' }}>
 
             <form onSubmit={handleRegister}>
+            {message && <div className="alert alert-info mb-3">{message}</div>}
             <div className="mb-3">
               <input
               type="email"

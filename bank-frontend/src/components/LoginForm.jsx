@@ -24,7 +24,7 @@ const LoginForm = ({ setAuthenticated }) => {
       localStorage.setItem('authenticated', 'true');
       setAuthenticated(true);
       navigate('/user/expense/');
-    } catch (error) {
+    } catch {
       setMessage('❌ Wrong email or password');
     }
   };

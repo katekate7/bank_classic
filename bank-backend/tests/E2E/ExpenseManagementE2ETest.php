@@ -417,7 +417,7 @@ class ExpenseManagementE2ETest extends WebTestCase
         $form = $crawler->selectButton('Update')->form();
         
         $form['expense[label]'] = 'Web Updated Expense';
-        $form['expense[amout]'] = '85.75'; // Note: typo in field name matches your code
+        $form['expense[amount]'] = '85.75';
 
         $this->client->submit($form);
         $this->assertResponseRedirects('/user/expense/');
