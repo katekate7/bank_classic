@@ -14,14 +14,18 @@ class ApiExpenseControllerTest extends WebTestCase
     private $client;
     private $entityManager;
     private $user;
+    private static bool $schemaCreated = false;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
         
-        // Create test database schema
-        $this->createSchema();
+        // Create test database schema only once per test run
+        if (!self::$schemaCreated) {
+            $this->createSchema();
+            self::$schemaCreated = true;
+        }
         
         // Create a test user
         $this->user = new User();
@@ -35,19 +39,38 @@ class ApiExpenseControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
-    protected function tearDown(): void
+    /**
+     * Helper method to ensure we have a valid user reference
+     */
+    private function getValidUser(): User
     {
-        // Clean up
-        if ($this->entityManager && $this->user) {
-            $expenses = $this->entityManager->getRepository(Expense::class)->findBy(['user' => $this->user]);
-            foreach ($expenses as $expense) {
-                $this->entityManager->remove($expense);
-            }
-            
-            $this->entityManager->remove($this->user);
-            $this->entityManager->flush();
+        if ($this->user && $this->entityManager->contains($this->user)) {
+            return $this->user;
         }
         
+        // Refresh user from database
+        if ($this->user && $this->user->getId()) {
+            $this->user = $this->entityManager->find(User::class, $this->user->getId());
+        }
+        
+        return $this->user;
+    }
+
+    protected function tearDown(): void
+    {
+        // Clean up with DQL to avoid detached entity issues
+        if ($this->entityManager) {
+            try {
+                $this->entityManager->createQuery('DELETE FROM App\Entity\Expense')->execute();
+                $this->entityManager->createQuery('DELETE FROM App\Entity\Category')->execute();
+                $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
+            } catch (\Exception $e) {
+                // Ignore cleanup errors in tests
+            }
+        }
+        
+        $this->user = null;
+        $this->entityManager = null;
         parent::tearDown();
     }
 
@@ -74,7 +97,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testCreateExpenseApiSuccess(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create a category first
         $category = new Category();
@@ -116,7 +139,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testCreateExpenseWithInvalidCategory(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
 
         $expenseData = [
             'label' => 'Invalid Category Expense',
@@ -137,7 +160,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testCreateExpenseWithMissingCategory(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
 
         $expenseData = [
             'label' => 'No Category Expense',
@@ -157,7 +180,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testCreateExpenseWithInvalidJson(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
 
         $this->client->request('POST', '/api/expense', [], [], 
             ['CONTENT_TYPE' => 'application/json'],
@@ -181,7 +204,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testGetExpenseListSuccess(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create test expenses
         $category = new Category();
@@ -231,7 +254,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testGetSingleExpenseSuccess(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create test expense
         $category = new Category();
@@ -286,7 +309,7 @@ class ApiExpenseControllerTest extends WebTestCase
         $this->entityManager->persist($otherExpense);
         $this->entityManager->flush();
 
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         $this->client->request('GET', '/api/expense/' . $otherExpense->getId());
         
         $this->assertResponseStatusCodeSame(403);
@@ -302,7 +325,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testDeleteExpenseSuccess(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create test expense
         $category = new Category();
@@ -337,7 +360,7 @@ class ApiExpenseControllerTest extends WebTestCase
 
     public function testUpdateExpenseSuccess(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create test expense and categories
         $category1 = new Category();

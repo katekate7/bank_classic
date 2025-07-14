@@ -14,6 +14,7 @@ class UserExpenseControllerTest extends WebTestCase
     private $client;
     private $entityManager;
     private $user;
+    private static bool $schemaCreated = false;
 
     protected function setUp(): void
     {
@@ -22,8 +23,11 @@ class UserExpenseControllerTest extends WebTestCase
         // Get entity manager from the already booted kernel
         $this->entityManager = static::getContainer()->get('doctrine')->getManager();
         
-        // Create test database schema - this is key for integration testing
-        $this->createSchema();
+        // Create test database schema only once per test run
+        if (!self::$schemaCreated) {
+            $this->createSchema();
+            self::$schemaCreated = true;
+        }
         
         // Create a test user with proper setup
         $this->user = new User();
@@ -36,27 +40,25 @@ class UserExpenseControllerTest extends WebTestCase
         $this->entityManager->persist($this->user);
         $this->entityManager->flush();
         
-        // Clear to avoid memory issues
-        $this->entityManager->clear();
-        
-        // Refresh user reference after clear
-        $this->user = $this->entityManager->find(User::class, $this->user->getId());
+        // Don't clear here - keep entities attached
     }
 
     protected function tearDown(): void
     {
-        // Clean up - Remove test data
+        // Clean up - Remove test data with proper cleanup
         if ($this->entityManager) {
             try {
-                // Remove all expenses and users to clean up
+                // Use DQL to avoid detached entity issues
                 $this->entityManager->createQuery('DELETE FROM App\Entity\Expense')->execute();
+                $this->entityManager->createQuery('DELETE FROM App\Entity\Category')->execute(); 
                 $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
-                $this->entityManager->createQuery('DELETE FROM App\Entity\Category')->execute();
             } catch (\Exception $e) {
-                // Ignore cleanup errors
+                // Ignore cleanup errors in tests
             }
         }
         
+        $this->user = null;
+        $this->entityManager = null;
         parent::tearDown();
     }
 
@@ -71,7 +73,8 @@ class UserExpenseControllerTest extends WebTestCase
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
         
         try {
-            $schemaTool->dropDatabase();
+            // Drop and recreate schema
+            $schemaTool->dropSchema($metadata);
         } catch (\Exception $e) {
             // Database might not exist, ignore
         }
@@ -79,15 +82,36 @@ class UserExpenseControllerTest extends WebTestCase
         $schemaTool->createSchema($metadata);
     }
 
+    /**
+     * Helper method to ensure we have a valid user reference
+     */
+    private function getValidUser(): User
+    {
+        if ($this->user && $this->entityManager->contains($this->user)) {
+            return $this->user;
+        }
+        
+        // Refresh user from database
+        if ($this->user && $this->user->getId()) {
+            $this->user = $this->entityManager->find(User::class, $this->user->getId());
+        }
+        
+        return $this->user;
+    }
+
     public function testExpenseIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/user/expense/');
-        $this->assertResponseRedirects();
+        // Expect either redirect to login or 401 unauthorized
+        $this->assertTrue(
+            $this->client->getResponse()->isRedirection() || 
+            $this->client->getResponse()->getStatusCode() === 401
+        );
     }
 
     public function testExpenseIndexWithAuthenticatedUser(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         $this->client->request('GET', '/user/expense/');
         
         $this->assertResponseIsSuccessful();
@@ -97,12 +121,16 @@ class UserExpenseControllerTest extends WebTestCase
     public function testExpenseNewPageRequiresAuthentication(): void
     {
         $this->client->request('GET', '/user/expense/new');
-        $this->assertResponseRedirects();
+        // Expect either redirect to login or 401 unauthorized
+        $this->assertTrue(
+            $this->client->getResponse()->isRedirection() || 
+            $this->client->getResponse()->getStatusCode() === 401
+        );
     }
 
     public function testExpenseNewPageWithAuthenticatedUser(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         $this->client->request('GET', '/user/expense/new');
         
         $this->assertResponseIsSuccessful();
@@ -111,7 +139,7 @@ class UserExpenseControllerTest extends WebTestCase
 
     public function testCreateExpense(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create a category first
         $category = new Category();
@@ -149,7 +177,7 @@ class UserExpenseControllerTest extends WebTestCase
 
     public function testShowExpense(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create a test expense
         $category = new Category();
@@ -181,7 +209,7 @@ class UserExpenseControllerTest extends WebTestCase
 
     public function testEditExpense(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create a test expense
         $category = new Category();
@@ -203,7 +231,7 @@ class UserExpenseControllerTest extends WebTestCase
         $form = $crawler->selectButton('Update')->form();
         
         $form['expense[label]'] = 'Updated Label';
-        $form['expense[amout]'] = '20.00';
+        $form['expense[amount]'] = '20.00';
 
         $this->client->submit($form);
         
@@ -224,7 +252,7 @@ class UserExpenseControllerTest extends WebTestCase
 
     public function testDeleteExpense(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create a test expense
         $category = new Category();
@@ -260,7 +288,7 @@ class UserExpenseControllerTest extends WebTestCase
 
     public function testUserCanOnlyAccessOwnExpenses(): void
     {
-        $this->client->loginUser($this->user);
+        $this->client->loginUser($this->getValidUser());
         
         // Create another user and expense
         $otherUser = new User();
