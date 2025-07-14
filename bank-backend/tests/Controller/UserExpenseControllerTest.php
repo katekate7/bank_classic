@@ -21,7 +21,7 @@ class UserExpenseControllerTest extends WebTestCase
         $this->client = static::createClient();
         
         // Get entity manager from the doctrine service
-        $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $this->entityManager = static::getContainer()->get('doctrine')->getManager();
         
         // Create test database schema only once per test run
         if (!self::$schemaCreated) {
@@ -33,7 +33,7 @@ class UserExpenseControllerTest extends WebTestCase
         $this->user = new User();
         $this->user->setEmail('test@example.com');
         
-        $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+        $passwordHasher = static::getContainer()->get('security.user_password_hasher');
         $hashedPassword = $passwordHasher->hashPassword($this->user, 'testpassword');
         $this->user->setPassword($hashedPassword);
         
@@ -293,7 +293,7 @@ class UserExpenseControllerTest extends WebTestCase
         // Create another user and expense
         $otherUser = new User();
         $otherUser->setEmail('other@example.com');
-        $passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
+        $passwordHasher = $this->getContainer()->get('security.user_password_hasher');
         $otherUser->setPassword($passwordHasher->hashPassword($otherUser, 'password'));
         
         $category = new Category();

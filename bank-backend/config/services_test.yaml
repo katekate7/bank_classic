@@ -1,7 +1,7 @@
 services:
-    # Make services public for testing
-    Doctrine\ORM\EntityManagerInterface:
+    # Make concrete services public for testing
+    doctrine.orm.default_entity_manager:
         public: true
         
-    Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
+    security.user_password_hasher:
         public: true
