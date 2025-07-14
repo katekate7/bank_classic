@@ -106,6 +106,16 @@ if [[ "$FRONTEND_ONLY" != true ]]; then
     print_status "Running Backend Tests..."
     echo "========================"
     
+    # Install dependencies first
+    print_status "Installing backend dependencies..."
+    docker-compose -f docker-compose.test.yml run --rm backend-test composer install --dev --optimize-autoloader
+    
+    # Setup test database
+    print_status "Setting up test database..."
+    docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:database:create --env=test --if-not-exists
+    docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:migrations:migrate --env=test --no-interaction
+    docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:fixtures:load --env=test --no-interaction
+    
     # Run unit tests
     if [[ "$INTEGRATION_ONLY" != true ]]; then
         print_status "Running PHP Unit Tests..."

@@ -29,6 +29,13 @@ jobs:
     - name: 🧪 Run integration tests
       run: |
         chmod +x ./run-tests.sh
+        # Install backend dependencies
+        docker-compose -f docker-compose.test.yml run --rm backend-test composer install --dev --optimize-autoloader
+        # Setup test database
+        docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:database:create --env=test --if-not-exists
+        docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:migrations:migrate --env=test --no-interaction
+        docker-compose -f docker-compose.test.yml run --rm backend-test php bin/console doctrine:fixtures:load --env=test --no-interaction
+        # Run all tests
         ./run-tests.sh
         
     - name: 📊 Upload test results
