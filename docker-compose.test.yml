@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Base de données MySQL pour les tests
+  db-test:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bank_test
+      MYSQL_USER: bank_user
+      MYSQL_PASSWORD: bank_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - /tmp/mysql_test_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Backend pour les tests
+  backend-test:
+    build:
+      context: ./bank-backend
+      dockerfile: Dockerfile
+    environment:
+      - APP_ENV=test
+      - DATABASE_URL=mysql://root:root@db-test:3306/bank_test?serverVersion=8.0
+    depends_on:
+      db-test:
+        condition: service_healthy
+    volumes:
+      - ./bank-backend:/var/www/html
+    working_dir: /var/www/html
+    command: |
+      sh -c "
+        echo 'Waiting for database...' &&
+        sleep 5 &&
+        php bin/console doctrine:database:drop --if-exists --force --env=test &&
+        php bin/console doctrine:database:create --env=test &&
+        php bin/console doctrine:migrations:migrate --no-interaction --env=test &&
+        echo 'Running PHPUnit tests...' &&
+        ./bin/phpunit tests/Integration/ --verbose
+      "
+
+  # Frontend pour les tests
+  frontend-test:
+    build:
+      context: ./bank-frontend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+    volumes:
+      - ./bank-frontend:/app
+    working_dir: /app
+    command: |
+      sh -c "
+        echo 'Cleaning node_modules and package-lock.json...' &&
+        rm -rf node_modules package-lock.json &&
+        echo 'Installing dependencies...' &&
+        npm install &&
+        echo 'Running frontend tests...' &&
+        npm test
+      "

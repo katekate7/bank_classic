@@ -21,7 +21,7 @@
                 <td>{{ expense.id }}</td>
                 <td>{{ expense.label }}</td>
                 <td>{{ expense.date ? expense.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ expense.amout }}</td>
+                <td>{{ expense.amount }}</td>
                 <td>
                     <a href="{{ path('app_user_expense_show', {'id': expense.id}) }}">show</a>
                     <a href="{{ path('app_user_expense_edit', {'id': expense.id}) }}">edit</a>
