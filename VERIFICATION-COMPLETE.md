@@ -78,16 +78,17 @@ deploy:
 - ✅ Récupération automatique des dernières images Docker
 - ✅ Redémarrage automatique des services sur le serveur
 
-## 🔧 Résolution Problème ESLint
+## 🔧 Résolution Problème CI/CD GitHub Actions
 
-### Problème Initial
-- ❌ **Erreur:** `Error: Cannot find module './source-code-visitor'` dans GitHub Actions
-- ❌ **Cause:** ESLint standalone dans environnement CI/CD non-Docker
+### Problème Résolu: docker-compose command not found
+- ❌ **Erreur:** `/bin/sh: line 1: docker-compose: command not found` dans GitHub Actions
+- ❌ **Cause:** GitHub Actions utilise Docker Compose V2 (`docker compose`) au lieu de V1 (`docker-compose`)
 
 ### Solution Appliquée
-- ✅ **Docker-first approach:** Tous les tests exécutés via Docker
-- ✅ **Environnement cohérent:** Même conteneur en local et CI/CD
-- ✅ **Simplification:** Focus uniquement sur les exigences documentation
+- ✅ **Migration vers Docker Compose V2:** Utilisation de `docker compose` (sans tiret)
+- ✅ **Syntaxe cohérente:** Tous les jobs utilisent `docker compose -f docker-compose.test.yml`
+- ✅ **Workflow simplifié:** Focus uniquement sur les tests Docker requis par la documentation
+- ✅ **Tests validés:** Backend et frontend fonctionnent parfaitement en local et CI/CD
 ```yaml
 # config/services_test.yaml
 services:
