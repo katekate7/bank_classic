@@ -22,13 +22,13 @@ class ExpenseManagementE2ETest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
         
         // Create a test user for E2E testing
         $this->user = new User();
         $this->user->setEmail('e2e-test@example.com');
         
-        $passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
+        $passwordHasher = $this->client->getContainer()->get(UserPasswordHasherInterface::class);
         $hashedPassword = $passwordHasher->hashPassword($this->user, 'e2epassword');
         $this->user->setPassword($hashedPassword);
         
@@ -183,7 +183,7 @@ class ExpenseManagementE2ETest extends WebTestCase
         // Create another user
         $otherUser = new User();
         $otherUser->setEmail('other-e2e@example.com');
-        $passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
+        $passwordHasher = $this->client->getContainer()->get(UserPasswordHasherInterface::class);
         $otherUser->setPassword($passwordHasher->hashPassword($otherUser, 'password'));
         
         $category = new Category();
