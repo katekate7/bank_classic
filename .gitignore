@@ -1,8 +1,17 @@
-# Symfony (backend)
-**/vendor/
+# Environment files (NEVER commit these)
+.env
+.env.local
+.env.dev
+.env.prod
+.env.test
+**/.env
 **/.env.local
 **/.env.dev
+**/.env.prod
 **/.env.test
+
+# Symfony (backend)
+**/vendor/
 
 # Node.js (frontend)
 **/node_modules/
