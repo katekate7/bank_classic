@@ -7,7 +7,14 @@ Une application moderne de gestion des dépenses personnelles développée avec 
 ![Symfony](https://img.shields.io/badge/Symfony-6.4-000000.svg)
 ![React](https://img.shields.io/badge/React-18-61DAFB.svg)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)
-![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions## 📚 Documentation Additionnelle
+
+- � [DEPLOYMENT.md](DEPLOYMENT.md) - Guide de déploiement détaillé
+- 🧪 [TESTING-COMPLETE.md](TESTING-COMPLETE.md) - Documentation des tests
+- 🔄 [CI-CD-DOCUMENTATION.md](CI-CD-DOCUMENTATION.md) - Pipeline CI/CD
+- 🏗️ [INFRASTRUCTURE.md](INFRASTRUCTURE.md) - Architecture technique
+- ✅ [COMPETENCIES-VALIDATION.md](COMPETENCIES-VALIDATION.md) - Validation des compétences
+- 🎯 [COMPETENCIES-MAPPING.md](COMPETENCIES-MAPPING.md) - Localisation précise des compétences.svg)
 
 ## 📋 Table des Matières
 
