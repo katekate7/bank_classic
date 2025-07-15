@@ -15,6 +15,8 @@ return [
             [['_route' => 'app_register', '_controller' => 'App\\Controller\\RegistrationController::register'], null, null, null, false, false, null],
         ],
         '/api/categories' => [[['_route' => 'categories_list', '_controller' => 'App\\Controller\\CategoryController::list'], null, ['GET' => 0], null, false, false, null]],
+        '/api/health' => [[['_route' => 'api_health', '_controller' => 'App\\Controller\\HealthController::health'], null, ['GET' => 0], null, false, false, null]],
+        '/api/status' => [[['_route' => 'api_status', '_controller' => 'App\\Controller\\HealthController::status'], null, ['GET' => 0], null, false, false, null]],
         '/home' => [[['_route' => 'home', '_controller' => 'App\\Controller\\HomeController::index'], null, null, null, false, false, null]],
         '/profile' => [[['_route' => 'profile_show', '_controller' => 'App\\Controller\\ProfileController::show'], null, ['GET' => 0], null, true, false, null]],
         '/profile/edit' => [[['_route' => 'app_profile_edit', '_controller' => 'App\\Controller\\ProfileController::edit'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],

@@ -10,6 +10,8 @@ return [
     'api_expense_update' => [['id'], ['_controller' => 'App\\Controller\\ApiExpenseController::update'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/expense']], [], [], []],
     'api_register' => [[], ['_controller' => 'App\\Controller\\ApiRegistrationController::register'], [], [['text', '/register']], [], [], []],
     'categories_list' => [[], ['_controller' => 'App\\Controller\\CategoryController::list'], [], [['text', '/api/categories']], [], [], []],
+    'api_health' => [[], ['_controller' => 'App\\Controller\\HealthController::health'], [], [['text', '/api/health']], [], [], []],
+    'api_status' => [[], ['_controller' => 'App\\Controller\\HealthController::status'], [], [['text', '/api/status']], [], [], []],
     'home' => [[], ['_controller' => 'App\\Controller\\HomeController::index'], [], [['text', '/home']], [], [], []],
     'profile_show' => [[], ['_controller' => 'App\\Controller\\ProfileController::show'], [], [['text', '/profile/']], [], [], []],
     'app_profile_edit' => [[], ['_controller' => 'App\\Controller\\ProfileController::edit'], [], [['text', '/profile/edit']], [], [], []],
