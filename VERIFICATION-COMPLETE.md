@@ -7,7 +7,8 @@
 
 L'infrastructure DevOps/CI-CD est maintenant **complètement fonctionnelle** avec :
 - ✅ **Backend Tests:** 3 tests passent, 12 assertions
-- ✅ **Frontend Tests:** 2 tests passent  
+- ✅ **Frontend Tests:** 2 tests passent
+- ✅ **Frontend Linting:** ESLint fonctionne sans erreurs
 - ✅ **Pipeline CI/CD:** Prêt pour déploiement automatisé
 - ✅ **Dockerisation:** Complète avec environnements de test et production
 
@@ -38,6 +39,13 @@ Test Files  1 passed (1)
      Tests  2 passed (2)
 ```
 
+### Frontend Linting (ESLint)
+```bash
+> npm run lint
+> eslint .
+✓ No linting errors (coverage directory properly ignored)
+```
+
 ## 🔧 Corrections Apportées
 
 ### 1. Problèmes d'Entités Corrigés
@@ -45,7 +53,12 @@ Test Files  1 passed (1)
 - ❌ **Avant:** `$user->setFirstName()` → ✅ **Après:** Supprimé (méthode inexistante)
 - ❌ **Avant:** `$category->setDescription()` → ✅ **Après:** Supprimé (méthode inexistante)
 
-### 2. Configuration des Services pour Tests
+### 2. Résolution des Problèmes ESLint
+- ❌ **Avant:** `Error: Cannot find module './source-code-visitor'`
+- ✅ **Après:** Dépendances réinstallées, répertoire coverage ignoré
+- ✅ Configuration ESLint mise à jour pour ignorer `/coverage`
+
+### 3. Configuration des Services pour Tests
 ```yaml
 # config/services_test.yaml
 services:
