@@ -10,13 +10,14 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:unit": "vitest run --config vitest.config.unit.js",
+    "test:unit": "vitest run --config vitest.config.js",
     "test:integration": "vitest run --config vitest.config.integration.js",
     "test:e2e": "playwright test",
     "test:ci": "vitest run --coverage --reporter=verbose",
     "test:watch": "vitest",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
-    "test:clear-cache": "vitest run --clear-cache"
+    "test:clear-cache": "vitest run --clear-cache",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e"
   },
   "dependencies": {
     "axios": "^1.8.4",

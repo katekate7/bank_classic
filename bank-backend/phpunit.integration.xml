@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- PHPUnit configuration for comprehensive testing -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="tests/bootstrap.php"
+         convertDeprecationsToExceptions="false"
+>
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
+        <server name="KERNEL_CLASS" value="App\Kernel" />
+        <env name="DATABASE_URL" value="sqlite:///%kernel.project_dir%/var/test.db" />
+    </php>
+
+    <testsuites>
+        <!-- Tests unitaires -->
+        <testsuite name="Unit Tests">
+            <directory>tests/Entity</directory>
+            <directory>tests/Form</directory>
+            <directory>tests/Repository</directory>
+        </testsuite>
+        
+        <!-- Tests d'intégration -->
+        <testsuite name="Integration Tests">
+            <directory>tests/Integration</directory>
+            <directory>tests/Controller</directory>
+        </testsuite>
+        
+        <!-- Tests système -->
+        <testsuite name="System Tests">
+            <directory>tests/System</directory>
+        </testsuite>
+        
+        <!-- Tests d'acceptation client -->
+        <testsuite name="Acceptance Tests">
+            <directory>tests/Acceptance</directory>
+        </testsuite>
+        
+        <!-- Tous les tests -->
+        <testsuite name="All Tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <directory>src/DataFixtures</directory>
+            <file>src/Kernel.php</file>
+        </exclude>
+        <report>
+            <html outputDirectory="var/coverage/html"/>
+            <text outputFile="var/coverage/coverage.txt"/>
+            <clover outputFile="var/coverage/clover.xml"/>
+        </report>
+    </coverage>
+
+    <logging>
+        <junit outputFile="var/test-results/junit.xml"/>
+        <testdoxHtml outputFile="var/test-results/testdox.html"/>
+        <testdoxText outputFile="var/test-results/testdox.txt"/>
+    </logging>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+    </listeners>
+
+    <!-- Extensions pour améliorer les tests -->
+    <extensions>
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+    </extensions>
+</phpunit>
