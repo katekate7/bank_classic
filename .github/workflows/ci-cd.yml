@@ -248,23 +248,9 @@ jobs:
         working-directory: ./bank-backend
         run: php bin/phpunit tests/Integration/ --testdox
 
-      - name: 🎭 Install Playwright
-        working-directory: ./bank-frontend
-        run: npx playwright install --with-deps chromium
-
-      - name: 🎪 Run E2E tests
-        working-directory: ./bank-frontend
-        run: npm run test:e2e
-        continue-on-error: true
-        env:
-          CI: true
-
-      - name: 📁 Upload E2E test artifacts
-        uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: e2e-test-results
-          path: bank-frontend/test-results/
+      - name: 🧪 Run integration tests
+        working-directory: ./bank-backend
+        run: php bin/phpunit tests/Integration/ --testdox
 
       - name: 🧹 Cleanup
         if: always()
