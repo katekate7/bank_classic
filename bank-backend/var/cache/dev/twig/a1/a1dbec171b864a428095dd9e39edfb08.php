@@ -1558,6 +1558,6 @@ $context["voter_detail"], "vote", [], "array", false, false, false, 418) == Twig
         </div>
     {% endif %}
 {% endblock %}
-", "@Security/Collector/security.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/symfony/security-bundle/Resources/views/Collector/security.html.twig");
+", "@Security/Collector/security.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/symfony/security-bundle/Resources/views/Collector/security.html.twig");
     }
 }

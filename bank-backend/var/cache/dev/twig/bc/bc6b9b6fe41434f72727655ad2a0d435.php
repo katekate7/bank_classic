@@ -132,7 +132,7 @@ class __TwigTemplate_050786f4e70ac466cad6a8f34c674ee8 extends Template
             yield "</td>
                 <td>";
             // line 24
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["expense"], "amout", [], "any", false, false, false, 24), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["expense"], "amount", [], "any", false, false, false, 24), "html", null, true);
             yield "</td>
                 <td>
                     <a href=\"";
@@ -226,7 +226,7 @@ class __TwigTemplate_050786f4e70ac466cad6a8f34c674ee8 extends Template
                 <td>{{ expense.id }}</td>
                 <td>{{ expense.label }}</td>
                 <td>{{ expense.date ? expense.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ expense.amout }}</td>
+                <td>{{ expense.amount }}</td>
                 <td>
                     <a href=\"{{ path('app_user_expense_show', {'id': expense.id}) }}\">show</a>
                     <a href=\"{{ path('app_user_expense_edit', {'id': expense.id}) }}\">edit</a>
@@ -242,6 +242,6 @@ class __TwigTemplate_050786f4e70ac466cad6a8f34c674ee8 extends Template
 
     <a href=\"{{ path('app_user_expense_new') }}\">Create new</a>
 {% endblock %}
-", "user_expense/index.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/user_expense/index.html.twig");
+", "user_expense/index.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/user_expense/index.html.twig");
     }
 }

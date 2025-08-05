@@ -167,6 +167,6 @@ class __TwigTemplate_bbdc76f796d8bb457a2cd283f12fdc3d extends Template
 
     {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url }) }}
 {% endblock %}
-", "@WebProfiler/Profiler/cancel.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/symfony/web-profiler-bundle/Resources/views/Profiler/cancel.html.twig");
+", "@WebProfiler/Profiler/cancel.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/symfony/web-profiler-bundle/Resources/views/Profiler/cancel.html.twig");
     }
 }

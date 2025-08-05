@@ -327,6 +327,6 @@ class __TwigTemplate_2589ee24e80c2d2b146d92d2020f664d extends Template
         {{- form_rest(form) -}}
     </table>
 {%- endblock form_widget_compound -%}
-", "form_table_layout.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/symfony/twig-bridge/Resources/views/Form/form_table_layout.html.twig");
+", "form_table_layout.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/symfony/twig-bridge/Resources/views/Form/form_table_layout.html.twig");
     }
 }

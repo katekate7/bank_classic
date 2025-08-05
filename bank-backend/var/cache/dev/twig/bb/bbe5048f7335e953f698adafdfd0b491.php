@@ -155,6 +155,6 @@ class __TwigTemplate_18eb30821a4fcc5e688f8a915bf06333 extends Template
 
     <a href=\"{{ path('profile_show') }}\">back to profile</a>
 {% endblock %}
-", "profile/edit.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/profile/edit.html.twig");
+", "profile/edit.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/profile/edit.html.twig");
     }
 }

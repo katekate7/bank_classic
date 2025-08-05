@@ -182,6 +182,6 @@ class __TwigTemplate_1a281e78c04d373b0dc9e949380aba37 extends Template
         <button type=\"submit\" class=\"btn\">Register</button>
     {{ form_end(registrationForm) }}
 {% endblock %}
-", "registration/register.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/registration/register.html.twig");
+", "registration/register.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/registration/register.html.twig");
     }
 }

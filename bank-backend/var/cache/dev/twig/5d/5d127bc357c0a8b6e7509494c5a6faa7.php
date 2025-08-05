@@ -202,6 +202,6 @@ class __TwigTemplate_c0251d39070aac9391639002eeb60abd extends Template
         <a href=\"{{ path('app_login') }}\">Login</a>
     {% endif %}
 {% endblock %}
-", "security/login.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/security/login.html.twig");
+", "security/login.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/security/login.html.twig");
     }
 }

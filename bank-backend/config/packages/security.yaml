@@ -15,15 +15,24 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        
+        api_public:
+            pattern: ^/api/(register|login)$
+            security: false
+            
+        api:
+            pattern: ^/api
+            lazy: true
+            provider: app_user_provider
+            custom_authenticator: App\Security\LoginAuthenticator
+            entry_point: App\Security\LoginAuthenticator
+            stateless: true
 
         main:
             lazy: true
             provider: app_user_provider
-
-            # лишаємо ЛИШЕ custom_authenticator
             custom_authenticator: App\Security\LoginAuthenticator
-            entry_point: App\Security\LoginAuthenticator   # <-- ВАЖЛИВО
-
+            entry_point: App\Security\LoginAuthenticator
             stateless: false
 
             logout:
@@ -38,5 +47,7 @@ security:
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: ROLE_USER }
         - { path: ^/user/expense, roles: ROLE_USER }

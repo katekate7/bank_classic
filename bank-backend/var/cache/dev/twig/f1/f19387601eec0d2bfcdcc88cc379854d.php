@@ -223,6 +223,6 @@ class __TwigTemplate_4eb82405f2133ac46daf40e6fd7ac627 extends Template
 {% endblock %}
     </body>
 </html>
-", "base.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/base.html.twig");
+", "base.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/base.html.twig");
     }
 }

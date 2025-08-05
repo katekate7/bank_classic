@@ -442,6 +442,6 @@ class __TwigTemplate_ac4e4ec920010ffe7636aa2f97ae0fd3 extends Template
         </div>
     {% endfor %}
 {% endblock %}
-", "@Debug/Profiler/dump.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/symfony/debug-bundle/Resources/views/Profiler/dump.html.twig");
+", "@Debug/Profiler/dump.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/symfony/debug-bundle/Resources/views/Profiler/dump.html.twig");
     }
 }

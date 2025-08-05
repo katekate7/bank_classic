@@ -13,7 +13,7 @@ const LoginForm = ({ setAuthenticated }) => {
     e.preventDefault();
     try {
       await api.post(
-        '/login',
+        '/api/login',
         { email, password },
         {
           headers: { 'Content-Type': 'application/json' },

@@ -155,6 +155,6 @@ class __TwigTemplate_aecb78c50af12d0bf25d88b7a8687061 extends Template
 
     <a href=\"{{ path('app_user_expense_index') }}\">back to list</a>
 {% endblock %}
-", "user_expense/new.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/user_expense/new.html.twig");
+", "user_expense/new.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/user_expense/new.html.twig");
     }
 }

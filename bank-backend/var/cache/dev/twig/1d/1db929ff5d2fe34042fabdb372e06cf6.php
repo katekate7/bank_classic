@@ -307,6 +307,6 @@ class __TwigTemplate_1ffc65c7448ece14e1cea69e40f3a53f extends Template
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' button')|trim}) %}
     {{- parent() -}}
 {%- endblock button_widget %}
-", "foundation_6_layout.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/symfony/twig-bridge/Resources/views/Form/foundation_6_layout.html.twig");
+", "foundation_6_layout.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/symfony/twig-bridge/Resources/views/Form/foundation_6_layout.html.twig");
     }
 }

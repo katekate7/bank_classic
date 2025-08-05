@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController; // ← ОБО�
 
 class ApiRegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'api_register', methods: ['POST'])]
+    #[Route('/api/register', name: 'api_user_register', methods: ['POST'])]
     public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

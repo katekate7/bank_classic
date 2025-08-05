@@ -12,7 +12,7 @@ const RegisterForm = ({ setAuthenticated }) => {
     e.preventDefault();
     try {
       await api.post(
-        '/register',
+        '/api/register',
         { email, password },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -20,7 +20,7 @@ const RegisterForm = ({ setAuthenticated }) => {
         }
       );
 
-      await api.post('/login', {
+      await api.post('/api/login', {
         email,
         password,
       });

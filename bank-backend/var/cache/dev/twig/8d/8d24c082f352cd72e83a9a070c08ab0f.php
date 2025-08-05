@@ -94,6 +94,6 @@ class __TwigTemplate_22e196cf9714caa2c112d446ece4b4a8 extends Template
     <input type=\"hidden\" name=\"_token\" value=\"{{ csrf_token('delete' ~ expense.id) }}\">
     <button class=\"btn\">Delete</button>
 </form>
-", "user_expense/_delete_form.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/user_expense/_delete_form.html.twig");
+", "user_expense/_delete_form.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/user_expense/_delete_form.html.twig");
     }
 }

@@ -8,9 +8,9 @@ export default defineConfig({
     port: 5173,
     historyApiFallback: true,
     proxy: {
-      '/api': 'http://localhost:8000',
-      '/login': 'http://localhost:8000',
-      '/logout': 'http://localhost:8000',
+      '/api': 'http://backend:80',
+      '/login': 'http://backend:80',
+      '/logout': 'http://backend:80',
     },
   },
 });

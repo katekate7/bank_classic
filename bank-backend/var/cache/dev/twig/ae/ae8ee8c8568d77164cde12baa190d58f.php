@@ -162,6 +162,6 @@ class __TwigTemplate_e27d739403917b1892f099bf8d67561f extends Template
 
     {{ include('user_expense/_delete_form.html.twig') }}
 {% endblock %}
-", "user_expense/edit.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/user_expense/edit.html.twig");
+", "user_expense/edit.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/user_expense/edit.html.twig");
     }
 }

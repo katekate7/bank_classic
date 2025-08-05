@@ -182,6 +182,6 @@ class __TwigTemplate_c1e46eb8d15a3fc6d5efee595bfc6e6d extends Template
 
     <a href=\"{{ path('app_profile_edit') }}\">edit</a>
 {% endblock %}
-", "profile/show.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/profile/show.html.twig");
+", "profile/show.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/profile/show.html.twig");
     }
 }

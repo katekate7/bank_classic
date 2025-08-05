@@ -99,6 +99,6 @@ class __TwigTemplate_5d6ada9a0a2fc67f7d1af2b2d67dc93e extends Template
     {{ form_widget(form) }}
     <button class=\"btn\">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
-", "user_expense/_form.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/user_expense/_form.html.twig");
+", "user_expense/_form.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/user_expense/_form.html.twig");
     }
 }

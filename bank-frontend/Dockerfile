@@ -1,8 +1,19 @@
-FROM node
-RUN mkdir next
-COPY . var/next
-WORKDIR /var/next
-RUN npm install
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
 COPY . .
-EXPOSE 4173
-CMD ["npm", "run","dev", "preview", "--", "--host"]
+
+# Expose the port Vite runs on
+EXPOSE 5173
+
+# Start the development server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

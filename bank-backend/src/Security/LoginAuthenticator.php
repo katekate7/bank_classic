@@ -17,7 +17,7 @@ class LoginAuthenticator extends AbstractAuthenticator implements Authentication
 {
     public function supports(Request $request): ?bool
     {
-        return $request->getPathInfo() === '/login' 
+        return ($request->getPathInfo() === '/login' || $request->getPathInfo() === '/api/login') 
             && $request->isMethod('POST');
     }
 

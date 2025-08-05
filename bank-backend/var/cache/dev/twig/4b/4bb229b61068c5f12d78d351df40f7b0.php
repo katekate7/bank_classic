@@ -186,6 +186,6 @@ class __TwigTemplate_8a94bbbc7d08a80decb8b81e8890aeef extends Template
         {%- endfor -%}
     </pre>
 {% endif %}
-", "@Doctrine/Collector/explain.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/doctrine/doctrine-bundle/templates/Collector/explain.html.twig");
+", "@Doctrine/Collector/explain.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/doctrine/doctrine-bundle/templates/Collector/explain.html.twig");
     }
 }

@@ -176,6 +176,6 @@ class __TwigTemplate_7f323b6c4ea229ffa5e5326f2b698992 extends Template
     </ul>
 </div>
 {% endblock %}
-", "contact/index.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/templates/contact/index.html.twig");
+", "contact/index.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/templates/contact/index.html.twig");
     }
 }

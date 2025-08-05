@@ -1866,6 +1866,6 @@ class __TwigTemplate_95bc8d43da4ffb4ed12aeb3a052c5c42 extends Template
         </tbody>
     </table>
 {% endmacro %}
-", "@Doctrine/Collector/db.html.twig", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/doctrine/doctrine-bundle/templates/Collector/db.html.twig");
+", "@Doctrine/Collector/db.html.twig", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/doctrine/doctrine-bundle/templates/Collector/db.html.twig");
     }
 }

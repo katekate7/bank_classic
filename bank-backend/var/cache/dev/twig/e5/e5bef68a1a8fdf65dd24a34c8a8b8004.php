@@ -85,6 +85,6 @@ class __TwigTemplate_1399a8bb840809dedfc6a7a8c0c08172 extends Template
     <path d=\"M4 6v6a8 3 0 0 0 16 0v-6\"></path>
     <path d=\"M4 12v6a8 3 0 0 0 16 0v-6\"></path>
 </svg>
-", "@Doctrine/Collector/database.svg", "/Users/kate/Desktop/Docker_practice/bank-backend/vendor/doctrine/doctrine-bundle/templates/Collector/database.svg");
+", "@Doctrine/Collector/database.svg", "/Users/kate/Desktop/Docker_practice/bank/bank-backend/vendor/doctrine/doctrine-bundle/templates/Collector/database.svg");
     }
 }
