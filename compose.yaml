@@ -1,5 +1,10 @@
 services:
-  app:
+  frontend:
+    container_name: react_frontend_container
+    image: kate0079887/react-bank
+    ports:
+      - "3000:3000"
+  backend:
     container_name: symfony-deployment-example
     image: kate0079887/symfony-bank
     ports:
